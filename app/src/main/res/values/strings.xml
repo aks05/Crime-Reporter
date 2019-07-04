@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Justice Light</string>
+    <string name="fvf_title">Favourites</string>
+    <string name="ff_title">UK Forces</string>
+    <string name="scf_title">Search Crime</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
