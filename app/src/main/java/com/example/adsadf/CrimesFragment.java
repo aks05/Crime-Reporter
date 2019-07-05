@@ -30,7 +30,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.adsadf.Api.BASE_URL;
 
-public class CrimesFragment extends Fragment implements ForceAdapter.ForceAdapterOnClickHandler {
+public class CrimesFragment extends Fragment
+        implements ForceAdapter.ForceAdapterOnClickHandler {
     private ForceAdapter.ForceAdapterOnTouchHandler mTouchHandler;
     private String Month, Latitude, Longitude, Force;
     private List<Crime> crimes;
@@ -238,8 +239,21 @@ public class CrimesFragment extends Fragment implements ForceAdapter.ForceAdapte
             editTextSearch.setEnabled(false);
             crimeCategory = new String[1];
             crimeCategory[0] = "No Data";
+            mForceAdapter.setHandler(new Handlers(), new Handlers());
         }
         mForceAdapter.setForceData(crimeCategory);
+    }
+    private class Handlers implements ForceAdapter.ForceAdapterOnTouchHandler,
+            ForceAdapter.ForceAdapterOnClickHandler {
+        @Override
+        public void onTouch(int position) {
+            //do nothing
+        }
+
+        @Override
+        public void onClick(int position) {
+            //do nothing
+        }
     }
 }
 

@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 class ForceAdapter extends RecyclerView.Adapter<ForceAdapter.ForceAdapterViewHolder>{
         private String[] mForceData;
-        private final ForceAdapterOnClickHandler mClickHandler;
-        private final ForceAdapterOnTouchHandler mTouchHandler;
+        private ForceAdapterOnClickHandler mClickHandler;
+        private ForceAdapterOnTouchHandler mTouchHandler;
         private Context context;
 
         interface ForceAdapterOnClickHandler {
@@ -125,5 +125,9 @@ class ForceAdapter extends RecyclerView.Adapter<ForceAdapter.ForceAdapterViewHol
             notifyDataSetChanged();
         }
 
-
+        void setHandler(ForceAdapter.ForceAdapterOnClickHandler mClickHandler,
+                        ForceAdapterOnTouchHandler mTouchHandler) {
+            this.mClickHandler= mClickHandler;
+            this.mTouchHandler= mTouchHandler;
+        }
 }
