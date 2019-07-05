@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 public class CrimesActivity extends AppCompatActivity implements
@@ -45,16 +44,13 @@ public class CrimesActivity extends AppCompatActivity implements
 
     @Override
     public void onTouch(int position) {
-        Log.i("Ayush", "Database onTouch is called");
         CrimeDatabase crimeDatabase= new CrimeDatabase(this);
         if (crimeDatabase.addData(crimesFragment.getCrimeString(position))) {
             Toast.makeText(this, "Added to Favourites", Toast.LENGTH_SHORT).show();
-            Log.i("Ayush", "if of onTouch is called");
         }
         else {
             Toast.makeText
                     (this, "Failed to Add to Favourites", Toast.LENGTH_SHORT).show();
-            Log.i("Ayush", "else of onTouch is called");
         }
     }
 }

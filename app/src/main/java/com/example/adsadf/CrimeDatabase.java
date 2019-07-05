@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 class CrimeDatabase extends SQLiteOpenHelper {
 
@@ -34,18 +33,15 @@ class CrimeDatabase extends SQLiteOpenHelper {
                 COL2 +" TEXT,"+COL3+" TEXT, "+COL4+" TEXT, "+COL5+" TEXT, "+COL6+ " TEXT, "+COL7+
                 " TEXT, "+COL8+" TEXT, "+ COL9+" TEXT, "+COL10+" TEXT, "+COL11+" TEXT)";
         db.execSQL(createTable);
-        Log.i("Ayush", "onCreate of Database is called");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        Log.i("Ayush", "onUpgrade is called");
         db.execSQL( String.format( " DROP TABLE IF EXISTS %s", TABLE_NAME ) );
         onCreate(db);
     }
 
     boolean addData(String[] item) {
-        Log.i("Ayush", "add data of database is called");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, item[0]);
@@ -60,7 +56,6 @@ class CrimeDatabase extends SQLiteOpenHelper {
         contentValues.put(COL11, item[9]);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
-        Log.i("Ayush", ""+result);
         return result >0;
     }
 

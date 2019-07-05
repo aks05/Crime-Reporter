@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,8 +32,7 @@ public class CrimesFragment extends Fragment
         implements ForceAdapter.ForceAdapterOnClickHandler {
     private ForceAdapter.ForceAdapterOnTouchHandler mTouchHandler;
     private String Month, Latitude, Longitude, Force;
-    private List<Crime> crimes;
-    private String[] crimeCategory;
+    private ArrayList<Crime> crimes;
     private ForceAdapter mForceAdapter;
     private EditText editTextSearch;
 
@@ -89,27 +86,20 @@ public class CrimesFragment extends Fragment
             final Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).
                     addConverterFactory(GsonConverterFactory.create()).build();
             Api api = retrofit.create(Api.class);
-            Call<List<Crime>> call;
+            Call<ArrayList<Crime>> call;
             if (Latitude == null) {
                 call = api.getCrimesWithoutLocation("all-crime", Force, Month);
             } else {
                 call = api.getCrimesAtLocation(Month, Latitude, Longitude);
             }
-            call.enqueue(new Callback<List<Crime>>() {
+            call.enqueue(new Callback<ArrayList<Crime>>() {
                 @Override
-                public void onResponse(@NonNull Call<List<Crime>> call,
-                                       @NonNull Response<List<Crime>> response) {
+                public void onResponse(@NonNull Call<ArrayList<Crime>> call,
+                                       @NonNull Response<ArrayList<Crime>> response) {
                     crimes = response.body();
 
                     if (crimes != null && crimes.size() != 0) {
-                        crimeCategory = new String[crimes.size()];
-                        Log.i("Ayush", "For Loop Started");
-                        for (int i = 0; i < crimes.size(); i++) {
-                            crimeCategory[i] = crimes.get(i).getCategory();
-                        }
-                        Log.i("Ayush", "For Loop completed");
-                        Log.i("Ayush", "" + crimes.size());
-                        mForceAdapter.setForceData(crimeCategory);
+                        mForceAdapter.setCrimeData(crimes);
                     } else {
                         Toast.makeText(getActivity(), "No Crimes Found",
                                 Toast.LENGTH_SHORT).show();
@@ -118,7 +108,7 @@ public class CrimesFragment extends Fragment
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<List<Crime>> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<ArrayList<Crime>> call, @NonNull Throwable t) {
                     Toast.makeText(getActivity(),
                             "Request Failed\nCheck your Internet Connection",
                             Toast.LENGTH_SHORT).show();
@@ -147,32 +137,33 @@ public class CrimesFragment extends Fragment
         });
     }
 
+    @Override
+    public void onResume () {
+        super.onResume();
+        if(getActivity().getClass().equals(MainActivity.class))
+            refresh();
+    }
+
     private void filter(String text) {
         //new array list that will hold the filtered data
-        ArrayList<String> filterdNames = new ArrayList<>();
+        ArrayList<Crime> filterdCrimes = new ArrayList<>();
 
         //looping through existing elements
-        if (crimeCategory != null) {
-            for (String s : crimeCategory) {
+        if (crimes != null) {
+            for (Crime s : crimes) {
                 //if the existing elements contains the search input
-                if (s.toLowerCase().contains(text.toLowerCase())) {
+                if (s.getCategory().toLowerCase().contains(text.toLowerCase())) {
                     //adding the element to filtered list
-                    filterdNames.add(s);
+                    filterdCrimes.add(s);
                 }
             }
-        }
-        if (filterdNames.size() != 0) {
-            String[] filter = new String[filterdNames.size()];
-            for (int i = 0; i < filterdNames.size(); i++)
-                filter[i] = filterdNames.get(i);
-            //calling a method of the adapter class and passing the filtered list
-            mForceAdapter.setForceData(filter);
+            mForceAdapter.setCrimeData(filterdCrimes);
         }
     }
 
     String[] getCrimeString(int position) {
         String[] crimeString = new String[10];
-        Crime crime = crimes.get(position);
+        Crime crime = mForceAdapter.getCrimes().get(position);
         crimeString[0] = crime.getCategory();
         crimeString[1] = crime.getMonth();
         crimeString[2] = crime.getLocation_type();
@@ -228,20 +219,19 @@ public class CrimesFragment extends Fragment
                         data.getString(2));
                 crimes.add(crime);
             }
-            crimeCategory = new String[crimes.size()];
-            for (int i = 0; i < crimes.size(); i++) {
-                crimeCategory[i] = crimes.get(i).getCategory();
-            }
         } else {
             Toast.makeText(getActivity(),
                     "No Favourites Found\nAdd Crime using Swipe Gesture",
                     Toast.LENGTH_LONG).show();
             editTextSearch.setEnabled(false);
-            crimeCategory = new String[1];
-            crimeCategory[0] = "No Data";
+            crimes = new ArrayList<>();
+            crimes.add(new Crime("No Data", " ",
+                    new Location(" ", new Street(" ", " "), " "),
+                    " ", new OutcomeStatus(" ", " "), " ",
+                    " "));
             mForceAdapter.setHandler(new Handlers(), new Handlers());
         }
-        mForceAdapter.setForceData(crimeCategory);
+        mForceAdapter.setCrimeData(crimes);
     }
     private class Handlers implements ForceAdapter.ForceAdapterOnTouchHandler,
             ForceAdapter.ForceAdapterOnClickHandler {

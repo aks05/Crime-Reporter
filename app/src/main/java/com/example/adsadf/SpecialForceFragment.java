@@ -75,6 +75,7 @@ public class SpecialForceFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<SpecialForce> call, @NonNull Throwable t) {
                 Toast.makeText(getContext(),"Request Failed", Toast.LENGTH_SHORT).show();
+                getActivity().finish();
             }
         });
     }
